@@ -14,7 +14,7 @@ class LuaFilesystemConan(ConanFile):
     exports_sources = ["premake5.lua"]
 
     # Iceshard conan tools
-    python_requires = "conan-iceshard-tools/0.6.1@iceshard/stable"
+    python_requires = "conan-iceshard-tools/0.6.2@iceshard/stable"
     python_requires_extend = "conan-iceshard-tools.IceTools"
 
     # Dependencies
@@ -50,7 +50,7 @@ class LuaFilesystemConan(ConanFile):
             self.copy("*.pdb", "bin", build_dir, keep_path=True)
         if self.settings.os == "Linux":
             self.copy("*.a", "lib", build_dir, keep_path=True)
-            self.copy("*.so", "bin", build_dir, keep_path=True)
+            self.copy("*.so", "lib", build_dir, keep_path=True)
 
     def package_info(self):
         self.cpp_info.libdirs = []
@@ -60,4 +60,7 @@ class LuaFilesystemConan(ConanFile):
         self.cpp_info.libs = [ "lfs" ]
 
         # Enviroment info
-        self.env_info.LUA_CPATH.append(os.path.join(self.package_folder, "bin/Release/?.dll"))
+        if self.settings.os == "Windows":
+            self.env_info.LUA_CPATH.append(os.path.join(self.package_folder, "bin/Release/?.dll"))
+        if self.settings.os == "Linux":
+            self.env_info.LUA_CPATH.append(os.path.join(self.package_folder, "bin/Release/?.so"))
